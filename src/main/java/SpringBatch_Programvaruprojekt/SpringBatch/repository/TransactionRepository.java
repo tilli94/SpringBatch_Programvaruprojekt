@@ -8,7 +8,6 @@ import java.util.List;
  * A Spring Data JPA Repository for Transaction that enables easier communication with the database
  */
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
-
     List<Transaction> findByReceiverIn(List<Long> accountIdsToRemove);
     List<Transaction> findBySenderIn(List<Long> accountIdsToRemove);
 

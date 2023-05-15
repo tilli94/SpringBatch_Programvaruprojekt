@@ -45,14 +45,27 @@ import java.util.Collections;
 @Configuration
 public class FlatFileToDB extends DefaultBatchConfiguration {
 
-    public static final String PERSONS_FILE_PATH = "persons_1k.csv";
-    public static final String ACCOUNTS_FILE_PATH = "accounts_2k.csv";
-    public static final String TRANSACTIONS_FILE_PATH = "transactions_10k.csv";
+    /* File paths for flat files to read data from. */
+    public static final String PERSONS_FILE_PATH = "persons_100k.csv";
+    public static final String ACCOUNTS_FILE_PATH = "accounts_200k.csv";
+    public static final String TRANSACTIONS_FILE_PATH = "transactions_1m.csv";
 
+    /* The size of the data chunk that will be processed per batch. */
     @Value("100")
     private Integer chunkSize;
 
-
+    /**
+     * Sets up a job to process data from flat files.
+     *
+     * The steps of the job are executed in the following order: personLoadStep -> accountLoadStep -> transactionLoadStep.
+     *
+     * @param jobRepository The repository that stores job details.
+     * @param listener The listener to notify upon job completion.
+     * @param personLoadStep The first step of the job, which loads Person data.
+     * @param transactionLoadStep The second step of the job, which loads Transaction data.
+     * @param accountLoadStep The final step of the job, which loads Account data.
+     * @return A fully configured Job instance.
+     */
     @Bean
     public Job loadJob(JobRepository jobRepository,
                        JobCompletionNotificationListener listener,
@@ -68,6 +81,16 @@ public class FlatFileToDB extends DefaultBatchConfiguration {
                 .build();
     }
 
+    /**
+     * Sets up a step to load data into the Person table.
+     * This step reads data from a flat file and writes the processed data to the Person table.
+     * Implements chunk processing
+     *
+     * @param jobRepository The repository that stores job details.
+     * @param transactionManager The transaction manager to handle data processing transactions.
+     * @param personLoadWriter The writer to store the Person data.
+     * @return A fully configured Step instance.
+     */
     @Bean
     public Step personLoadStep(JobRepository jobRepository,
                            PlatformTransactionManager transactionManager,
@@ -81,6 +104,17 @@ public class FlatFileToDB extends DefaultBatchConfiguration {
         simpleStepBuilder.transactionManager(transactionManager);
         return simpleStepBuilder.build();
     }
+
+    /**
+     * Sets up a step to load data into the Account table.
+     * This step reads data from a flat file and writes the processed data to the Account table.
+     * Implements chunk processing
+     *
+     * @param jobRepository The repository that stores job details.
+     * @param transactionManager The transaction manager to handle data processing transactions.
+     * @param accountLoadWriter The writer to store the Account data.
+     * @return A fully configured Step instance.
+     */
     @Bean
     public Step accountLoadStep(JobRepository jobRepository,
                             PlatformTransactionManager transactionManager,
@@ -94,6 +128,17 @@ public class FlatFileToDB extends DefaultBatchConfiguration {
         simpleStepBuilder.transactionManager(transactionManager);
         return simpleStepBuilder.build();
     }
+
+    /**
+     * Sets up a step to load data into the Transaction table.
+     * This step reads data from a flat file and writes the data to the Transaction table.
+     * Implements chunk processing
+     *
+     * @param jobRepository The repository that stores job details.
+     * @param transactionManager The transaction manager to handle data processing transactions.
+     * @param transactionLoadWriter The writer to store the Transaction data.
+     * @return A fully configured Step instance.
+     */
     @Bean
     public Step transactionLoadStep(JobRepository jobRepository,
                                     PlatformTransactionManager transactionManager,
@@ -108,7 +153,14 @@ public class FlatFileToDB extends DefaultBatchConfiguration {
         return simpleStepBuilder.build();
     }
 
-//Reads from file
+    /**
+     * Provides a reader for Person data from a flat file.
+     *
+     * The returned reader is configured to parse lines in the file using a comma as a delimiter
+     * and map the data to a Person object.
+     *
+     * @return A FlatFileItemReader configured to read Person data from a flat file.
+     */
     @Bean
     public FlatFileItemReader<Person> personLoadReader() {
         FlatFileItemReader<Person> reader = new FlatFileItemReader<>();
@@ -185,7 +237,13 @@ public class FlatFileToDB extends DefaultBatchConfiguration {
         return reader;
     }
 
-//Writes to db
+    /**
+     * Provides a writer for Person data to a PersonRepository.
+     * The returned writer is configured to use the save method of the provided PersonRepository.
+     *
+     * @param personRepository The repository to which Person data will be written.
+     * @return A RepositoryItemWriter configured to write Person data to the provided PersonRepository.
+     */
     @Bean
     public RepositoryItemWriter<Person> personLoadWriter(PersonRepository personRepository) {
         RepositoryItemWriter<Person> writer = new RepositoryItemWriter<>();

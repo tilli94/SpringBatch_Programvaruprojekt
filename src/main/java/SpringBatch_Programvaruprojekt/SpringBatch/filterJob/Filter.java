@@ -96,7 +96,7 @@ public class Filter extends DefaultBatchConfiguration {
                 .reader(personReaderFromDatabase())
                 .processor(personFilterProcessor())
                 .writer(removedPersonWriter)
-                //.listener(chunkListener)
+                //.listener(chunkListener) //listener that logs start and completion of chunks
                 ;
         simpleStepBuilder.transactionManager(transactionManager);
         return simpleStepBuilder.build();
@@ -124,7 +124,7 @@ public class Filter extends DefaultBatchConfiguration {
                 .reader(transactionReaderFromDatabase())
                 .processor(transactionFilterProcessor())
                 .writer(removedTransactionWriter)
-                //.listener(chunkListener)
+                //.listener(chunkListener) //listener that logs start and completion of chunks
                 ;
         simpleStepBuilder.transactionManager(transactionManager);
         return simpleStepBuilder.build();
@@ -174,7 +174,6 @@ public class Filter extends DefaultBatchConfiguration {
     public TransactionFilterProcessor transactionFilterProcessor() {
         return new TransactionFilterProcessor();
     }
-
 
     /**
      * Create a JpaItemWriter for writing removed Person entities to the database.

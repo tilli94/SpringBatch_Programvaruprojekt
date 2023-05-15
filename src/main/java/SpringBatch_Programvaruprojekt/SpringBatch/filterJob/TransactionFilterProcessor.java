@@ -42,7 +42,6 @@ public class TransactionFilterProcessor implements ItemProcessor<Transaction, Re
             return null;
         }
         else {
-              //Deletes from DB, writes to removed items DB
               RemovedTransaction removed = new RemovedTransaction(transaction.getId(), transaction.getSender(), transaction.getReceiver(), transaction.getDate(), transaction.getAmount());
               transactionRepository.delete(transaction);
 
