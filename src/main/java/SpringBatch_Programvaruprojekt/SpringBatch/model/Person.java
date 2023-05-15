@@ -8,6 +8,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+
+/**
+ * @author Çagri Çimen
+ * @author Wilmer Hallin Jacobson
+ * @author Tilda Engström
+ *
+ * The Person class represents a person entity and is used for mapping data from and to the "persons" table in the database.
+ */
 @Getter
 @Setter
 @Entity
@@ -24,6 +32,13 @@ public class Person {
     @Column(name = "date_of_birth", nullable = false, columnDefinition = "DATE")
     private LocalDate dateOfBirth;
 
+    /**
+     * Constructor for Person
+     * @param id an id for each person
+     * @param firstName the person's first name
+     * @param lastName the person's last name
+     * @param dateOfBirth the date the person was born
+     */
     public Person(long id, String firstName, String lastName, LocalDate dateOfBirth) {
         this.id = id;
         this.firstName = firstName;
@@ -31,9 +46,16 @@ public class Person {
         this.dateOfBirth = dateOfBirth;
     }
 
+    /**
+     * An empty constructor for Person
+     */
     public Person() {
     }
 
+    /**
+     * Concatenates all class variables into a readable string
+     * @return Returns a readable string that includes all the Person class variables.
+     */
     @Override
     public String toString() {
         return "Person{" +

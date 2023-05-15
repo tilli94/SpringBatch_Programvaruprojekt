@@ -9,6 +9,7 @@ h2:
 #    settings:
 #      web-allow-others: true
 
+#  Configuration in order to connect with the H2 database
 spring:
   datasource:
     driverClassName: org.h2.Driver
@@ -18,7 +19,7 @@ spring:
     initalization-mode: always
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
-    show-sql: false #true visar hibernates sql-körningar
+    show-sql: false # "true" will show hibernates sql queries
     properties:
       hibernate:
         format_sql: true
@@ -40,6 +41,7 @@ spring:
 #       hibernate:
 #         SQL: DEBUG
 
+#  Gives more detailed logs.
 logging:
   level:
     org:
@@ -49,19 +51,25 @@ logging:
             sql:
               BasicBinder: TRACE
 
+
 #jpa:
   #defer-datasource-initialization: true
 #batch:
-   #jdbc:
-     #initialize-schema: always
-     #table-prefix: BATCH_
-     #schema: classpath:org/springframework/batch/core/schema.sql
+  #jdbc:
+    #  Initializes the database schema every time the application starts. This is useful for
+    #  development and testing environments where you may want to reset the database to a known state at startup.
+    #initialize-schema: always
+    #  Sets the prefix for all Spring Batch metadata tables. By default, Spring Batch creates its own set of
+    #  tables to store job execution data. The prefix "BATCH_" will be added to all these table names.
+    #table-prefix: BATCH_
+    #  Specifies the location of the SQL script used to initialize the schema of the database.
+    #schema: classpath:org/springframework/batch/core/schema.sql
 
-# Gör så att batch inte startar automatiskt
-# spring:
-#   batch:
-#     job:
-#       enabled: false
+#  Makes it so that the batch jobs doesn't start automatically
+#spring:
+  #batch:
+    #job:
+      #enabled: false
 
 #application:
 #  schedule:

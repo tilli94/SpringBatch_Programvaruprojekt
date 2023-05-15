@@ -9,6 +9,14 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+
+/**
+ * @author Çagri Çimen
+ * @author Wilmer Hallin Jacobson
+ * @author Tilda Engström
+ *
+ * The RemovedTransactions class represents a removed transactions entity and is used for mapping data from and to the "removed_transactions" table in the database.
+ */
 @Getter
 @Setter
 @Entity
@@ -26,6 +34,14 @@ public class RemovedTransaction {
     @Column(name = "amount", nullable = false, columnDefinition = "DECIMAL(13,4)")
     private BigDecimal amount;
 
+    /**
+     * Constructor for RemovedTransaction
+     * @param id transaction id
+     * @param sender the sender of money in the performed transaction
+     * @param receiver the receiver of money in the performed transaction
+     * @param date the date the transaction took place
+     * @param amount the amount of money that was moved during the transaction
+     */
     public RemovedTransaction(long id, long sender, long receiver, LocalDate date, BigDecimal amount) {
         this.id = id;
         this.sender = sender;
@@ -33,10 +49,15 @@ public class RemovedTransaction {
         this.date = date;
         this.amount = amount;
     }
-
+    /**
+     * An empty constructor for RemovedTransaction
+     */
     public RemovedTransaction() {
     }
-
+    /**
+     * Concatenates all class variables into a readable string
+     * @return Returns a readable string that includes all the RemovedTransaction's class variables.
+     */
     @Override
     public String toString() {
         return "Transaction{" +
