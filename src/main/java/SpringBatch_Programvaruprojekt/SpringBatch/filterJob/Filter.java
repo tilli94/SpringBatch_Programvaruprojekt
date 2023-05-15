@@ -27,17 +27,36 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.PlatformTransactionManager;
 
-
+/**
+ * @author Çagri Çimen
+ * @author Wilmer Hallin Jacobson
+ * @author Tilda Engström
+ *
+ * A configuration class for managing batch operations related to data filtering in the database.
+ * Sets up Spring Batch infrastructure needed for jobs and steps for filtering operations.
+ */
 @Configuration
 @EnableScheduling
 public class Filter extends DefaultBatchConfiguration {
 
+    /* The size of the data chunk that will be processed per batch. */
     @Value("100")
     private Integer chunkSize;
 
+    /* The EntityManagerFactory used for JPA operations. */
     @Autowired
     private EntityManagerFactory entityManagerFactory;
 
+    /**
+     * Defines the job that will handle the filtering of data entities.
+     *
+     * @param jobRepository Repository for Job instances.
+     * @param listener Listener for job completion events.
+     * @param personFilterStep Step for filtering Person entities.
+     * @param transactionFilterStep Step for filtering Transaction entities.
+     *
+     * @return The Job instance.
+     */
     @Bean
     public Job filterJob(JobRepository jobRepository,
                          JobCompletionNotificationListener listener,
@@ -53,6 +72,18 @@ public class Filter extends DefaultBatchConfiguration {
                 .end()
                 .build();
     }
+
+    /**
+     * Defines the step that will handle the filtering of Person entities.
+     * Implements chunk processing
+     *
+     * @param jobRepository Repository for Job instances.
+     * @param transactionManager The transaction manager for the step.
+     * @param removedPersonWriter Writer for removed Person entities.
+     * @param chunkListener Listener for chunk processing events.
+     *
+     * @return The Step instance.
+     */
 
     @Bean
     public Step personFilterStep(JobRepository jobRepository,
@@ -71,6 +102,17 @@ public class Filter extends DefaultBatchConfiguration {
         return simpleStepBuilder.build();
     }
 
+    /**
+     * Defines the step that will handle the filtering of Transaction entities.
+     * Implements chunk processing
+     *
+     * @param jobRepository Repository for Job instances.
+     * @param transactionManager The transaction manager for the step.
+     * @param removedTransactionWriter Writer for removed Transaction entities.
+     * @param chunkListener Listener for chunk processing events.
+     *
+     * @return The Step instance.
+     */
     @Bean
     protected Step transactionFilterStep(JobRepository jobRepository,
                                          PlatformTransactionManager transactionManager,
@@ -88,7 +130,10 @@ public class Filter extends DefaultBatchConfiguration {
         return simpleStepBuilder.build();
     }
 
-    /* Reads from tables */
+    /**
+     * Creates a JpaCursorItemReader for reading Person entities from the database.
+     * @return The JpaCursorItemReader instance.
+     */
     @Bean
     public JpaCursorItemReader<Person> personReaderFromDatabase() {
         return new JpaCursorItemReaderBuilder<Person>()
@@ -97,6 +142,11 @@ public class Filter extends DefaultBatchConfiguration {
                 .queryString("SELECT p FROM Person p ORDER BY p.id ASC")
                 .build();
     }
+
+    /**
+     * Creates a JpaCursorItemReader for reading Transaction entities from the database.
+     * @return The JpaCursorItemReader instance.
+     */
     @Bean
     public JpaCursorItemReader<Transaction> transactionReaderFromDatabase() {
         return new JpaCursorItemReaderBuilder<Transaction>()
@@ -106,24 +156,45 @@ public class Filter extends DefaultBatchConfiguration {
                 .build();
     }
 
-    /* Filtering data */
+    /**
+     * Create a PersonFilterProcessor for processing Person entities.
+     * Filtering data
+     * @return The PersonFilterProcessor instance.
+     */
     @Bean
     public PersonFilterProcessor personFilterProcessor() {
         return new PersonFilterProcessor();
     }
+
+    /**
+     * Create a TransactionFilterProcessor for processing Transaction entities.
+     * @return The TransactionFilterProcessor instance.
+     */
     @Bean
     public TransactionFilterProcessor transactionFilterProcessor() {
         return new TransactionFilterProcessor();
     }
 
 
-    /* Writes to Removed Tables */
+    /**
+     * Create a JpaItemWriter for writing removed Person entities to the database.
+     *
+     * @param entityManagerFactory The EntityManagerFactory used for JPA operations.
+     * @return The JpaItemWriter instance.
+     */
     @Bean
     public JpaItemWriter<RemovedPerson> removedPersonWriter(EntityManagerFactory entityManagerFactory) {
         JpaItemWriter<RemovedPerson> writer = new JpaItemWriter<>();
         writer.setEntityManagerFactory(entityManagerFactory);
         return writer;
     }
+
+    /**
+     * Create a JpaItemWriter for writing removed Transaction entities to the database.
+     *
+     * @return The JpaItemWriter instance.
+     * @param entityManagerFactory The EntityManagerFactory used for JPA operations.
+     */
     @Bean
     public JpaItemWriter<RemovedTransaction> removedTransactionWriter(EntityManagerFactory entityManagerFactory) {
         JpaItemWriter<RemovedTransaction> writer = new JpaItemWriter<>();

@@ -11,7 +11,15 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
+/**
+ * @author Çagri Çimen
+ * @author Wilmer Hallin Jacobson
+ * @author Tilda Engström
+ *
+ * This class represents the processor in a Spring Batch Job which processes Person objects and converts them to RemovedPerson objects.
+ * It handles the business logic to decide which Person should be removed based on the age criteria.
+ * If a Person is under 18 years old, their associated Accounts and Transactions are also removed and saved as RemovedAccount and RemovedTransaction.
+ */
 public class PersonFilterProcessor implements ItemProcessor<Person, RemovedPerson>{
 
     @Autowired
@@ -25,7 +33,13 @@ public class PersonFilterProcessor implements ItemProcessor<Person, RemovedPerso
     @Autowired
     private RemovedTransactionRepository removedTransactionRepository;
 
-
+    /**
+     * The method to process each Person item.
+     * If the Person is under 18 years old, the associated Accounts and Transactions are also processed.
+     *
+     * @param person The Person object to be processed.
+     * @return The RemovedPerson object if the Person was processed and removed, otherwise null.
+     */
     public RemovedPerson process(final Person person) {
 
         LocalDate currentDate = LocalDate.now();

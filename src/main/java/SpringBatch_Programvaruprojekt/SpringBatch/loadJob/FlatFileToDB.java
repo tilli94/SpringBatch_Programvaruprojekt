@@ -32,6 +32,16 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 
+
+
+/**
+ * @author Çagri Çimen
+ * @author Wilmer Hallin Jacobson
+ * @author Tilda Engström
+ *
+ * A configuration class for managing batch operations related to loading data from flat file into database
+ * Sets up Spring Batch infrastructure needed for jobs and steps for loading data.
+ */
 @Configuration
 public class FlatFileToDB extends DefaultBatchConfiguration {
 
@@ -121,6 +131,14 @@ public class FlatFileToDB extends DefaultBatchConfiguration {
         }});
         return reader;
     }
+
+    /**
+     * Provides a reader for Account data from a flat file.
+     * The returned reader is configured to parse lines in the file using a comma as a delimiter
+     * and map the data to an Account object.
+     *
+     * @return A FlatFileItemReader configured to read Account data from a flat file.
+     */
     @Bean
     public FlatFileItemReader<Account> accountLoadReader() {
         FlatFileItemReader<Account> reader = new FlatFileItemReader<>();
@@ -136,6 +154,14 @@ public class FlatFileToDB extends DefaultBatchConfiguration {
         }});
         return reader;
     }
+
+    /**
+     * Provides a reader for Transaction data from a flat file.
+     * The returned reader is configured to parse lines in the file using a comma as a delimiter
+     * and map the data to a Transaction object.
+     *
+     * @return A FlatFileItemReader configured to read Transaction data from a flat file.
+     */
     @Bean
     public FlatFileItemReader<Transaction> transactionLoadReader() {
         FlatFileItemReader<Transaction> reader = new FlatFileItemReader<>();
@@ -167,6 +193,14 @@ public class FlatFileToDB extends DefaultBatchConfiguration {
         writer.setMethodName("save");
         return writer;
     }
+
+    /**
+     * Provides a writer for Account data to an AccountRepository.
+     * The returned writer is configured to use the save method of the provided AccountRepository.
+     *
+     * @param accountRepository The repository to which Account data will be written.
+     * @return A RepositoryItemWriter configured to write Account data to the provided AccountRepository.
+     */
     @Bean
     public RepositoryItemWriter<Account> accountLoadWriter(AccountRepository accountRepository) {
         RepositoryItemWriter<Account> writer = new RepositoryItemWriter<>();
@@ -174,6 +208,14 @@ public class FlatFileToDB extends DefaultBatchConfiguration {
         writer.setMethodName("save");
         return writer;
     }
+
+    /**
+     * Provides a writer for Transaction data to a TransactionRepository.
+     * The returned writer is configured to use the save method of the provided TransactionRepository.
+     *
+     * @param transactionRepository The repository to which Transaction data will be written.
+     * @return A RepositoryItemWriter configured to write Transaction data to the provided TransactionRepository.
+     */
     @Bean
     public RepositoryItemWriter<Transaction> transactionLoadWriter(TransactionRepository transactionRepository) {
         RepositoryItemWriter<Transaction> writer = new RepositoryItemWriter<>();
