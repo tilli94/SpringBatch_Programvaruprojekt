@@ -3,8 +3,6 @@ package SpringBatch_Programvaruprojekt.SpringBatch.filterJob;
 import SpringBatch_Programvaruprojekt.SpringBatch.model.RemovedTransaction;
 import SpringBatch_Programvaruprojekt.SpringBatch.model.Transaction;
 import SpringBatch_Programvaruprojekt.SpringBatch.repository.TransactionRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -42,7 +40,6 @@ public class TransactionFilterProcessor implements ItemProcessor<Transaction, Re
             return null;
         }
         else {
-              //Deletes from DB, writes to removed items DB
               RemovedTransaction removed = new RemovedTransaction(transaction.getId(), transaction.getSender(), transaction.getReceiver(), transaction.getDate(), transaction.getAmount());
               transactionRepository.delete(transaction);
 

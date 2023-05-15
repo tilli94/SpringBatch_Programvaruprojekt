@@ -1,13 +1,13 @@
-# H2 Database configuration
+#  H2 Database configuration
 server:
   port: 9090
 
-# H2 Console configuration
+#  H2 Console configuration
 h2:
   console:
     path: /h2-console
-#    settings:
-#      web-allow-others: true
+    #settings:
+      #web-allow-others: true
 
 #  Configuration in order to connect with the H2 database
 spring:
@@ -26,20 +26,20 @@ spring:
         ddl:
           auto: create
 
- #sql:
-   #init:
-     #mode: always
+#sql:
+ #init:
+   #mode: always
 
 #jpa:
   #hibernate:
     #ddl-auto: create
 
-# Add logging
-# logging:
-#   level:
-#     org:
-#       hibernate:
-#         SQL: DEBUG
+#  Add logging
+#logging:
+  #level:
+    #org:
+      #hibernate:
+        #SQL: DEBUG
 
 #  Gives more detailed logs.
 logging:
@@ -53,7 +53,11 @@ logging:
 
 
 #jpa:
+  #  Defers the initialization of the datasource until after JPA has started.
+  #  This is useful when using database initialization scripts with JPA, since
+  #  these scripts often require the database to be in a certain state before they can run successfully.
   #defer-datasource-initialization: true
+
 #batch:
   #jdbc:
     #  Initializes the database schema every time the application starts. This is useful for
@@ -72,7 +76,7 @@ logging:
       #enabled: false
 
 #application:
-#  schedule:
-#    cron: "0 0 0/5 * * * ?"
-#  batch:
-#    chunkSize: 100
+  #schedule:
+    #cron: "0 0 0/5 * * * ?"
+  #batch:
+    #chunkSize: 100

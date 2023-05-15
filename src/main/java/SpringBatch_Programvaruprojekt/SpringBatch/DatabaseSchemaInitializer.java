@@ -9,6 +9,13 @@ import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 import javax.sql.DataSource;
 
+/**
+ * @author Çagri Çimen
+ * @author Wilmer Hallin Jacobson
+ * @author Tilda Engström
+ *
+ Configuration class responsible for initializing the database schema.
+ */
 @Configuration
 public class DatabaseSchemaInitializer {
 

@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @Entity
-@Table(name = "RemovedAccounts")
+@Table(name = "removed_accounts")
 public class RemovedAccount {
     @Id
     @Column(name = "id", unique = true, columnDefinition = "BIGINT", updatable = false)

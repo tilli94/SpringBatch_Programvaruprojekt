@@ -20,7 +20,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
-@Table(name = "Transactions")
+@Table(name = "transactions")
 public class Transaction {
 
     @Id
@@ -52,13 +52,13 @@ public class Transaction {
     }
 
     /**
-     * A empty constructor for Transaction
+     * An empty constructor for Transaction
      */
     public Transaction() {
     }
 
     /**
-     * Concatenates all class varaibles into a readable string
+     * Concatenates all class variables into a readable string
      * @return Returns a readable string that includes all the Transactions class variables.
      */
     @Override

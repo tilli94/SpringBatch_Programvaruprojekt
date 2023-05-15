@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @Entity
-@Table(name = "Accounts")
+@Table(name = "accounts")
 public class Account {
     @Id
     @Column(name = "id", unique = true, columnDefinition = "BIGINT", updatable = false)

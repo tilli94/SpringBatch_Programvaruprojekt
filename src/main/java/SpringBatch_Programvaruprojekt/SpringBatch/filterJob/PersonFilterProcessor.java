@@ -2,8 +2,6 @@ package SpringBatch_Programvaruprojekt.SpringBatch.filterJob;
 
 import SpringBatch_Programvaruprojekt.SpringBatch.model.*;
 import SpringBatch_Programvaruprojekt.SpringBatch.repository.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.time.LocalDate;
