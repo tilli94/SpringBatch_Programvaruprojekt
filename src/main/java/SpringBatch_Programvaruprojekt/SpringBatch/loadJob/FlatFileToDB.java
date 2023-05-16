@@ -11,7 +11,10 @@ import SpringBatch_Programvaruprojekt.SpringBatch.repository.TransactionReposito
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.support.DefaultBatchConfiguration;
+import org.springframework.batch.core.job.builder.FlowBuilder;
 import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.job.flow.Flow;
+import org.springframework.batch.core.job.flow.support.SimpleFlow;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.SimpleStepBuilder;
@@ -25,6 +28,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.beans.PropertyEditorSupport;
@@ -46,9 +51,9 @@ import java.util.Collections;
 public class FlatFileToDB extends DefaultBatchConfiguration {
 
     /* File paths for flat files to read data from. */
-    public static final String PERSONS_FILE_PATH = "persons_10k.csv";
-    public static final String ACCOUNTS_FILE_PATH = "accounts_20k.csv";
-    public static final String TRANSACTIONS_FILE_PATH = "transactions_100k.csv";
+    public static final String PERSONS_FILE_PATH = "persons_1k.csv";
+    public static final String ACCOUNTS_FILE_PATH = "accounts_2k.csv";
+    public static final String TRANSACTIONS_FILE_PATH = "transactions_10k.csv";
 
     /* The size of the data chunk that will be processed per batch. */
     @Value("100")
@@ -73,12 +78,42 @@ public class FlatFileToDB extends DefaultBatchConfiguration {
                 .repository(jobRepository)
                 .incrementer(new RunIdIncrementer())
                 .listener(listener)
-                .flow(personLoadStep)
-                .next(accountLoadStep)
-                .next(transactionLoadStep)
-                .end()
+                .start(splitFlow(personLoadStep, transactionLoadStep, accountLoadStep))
+                .build()
                 .build();
     }
+
+    @Bean
+    public Flow splitFlow(Step personLoadStep, Step transactionLoadStep, Step accountLoadStep) {
+        return new FlowBuilder<SimpleFlow>("splitFlow")
+                .split(taskExecutor())
+                .add(flow1(personLoadStep), flow2(transactionLoadStep), flow3(accountLoadStep))
+                .build();
+    }
+    @Bean
+    public TaskExecutor taskExecutor() {
+        return new SimpleAsyncTaskExecutor("spring_batch");
+    }
+    @Bean
+    public Flow flow1(Step personLoadStep) {
+        return new FlowBuilder<SimpleFlow>("flow1")
+                .start(personLoadStep)
+                .build();
+    }
+    @Bean
+    public Flow flow2(Step transactionLoadStep) {
+        return new FlowBuilder<SimpleFlow>("flow2")
+                .start(transactionLoadStep)
+                .build();
+    }
+    @Bean
+    public Flow flow3(Step accountLoadStep) {
+        return new FlowBuilder<SimpleFlow>("flow3")
+                .start(accountLoadStep)
+                .build();
+    }
+
+
 
     /**
      * Sets up a step to load data into the Person table.
