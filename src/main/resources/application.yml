@@ -2,15 +2,14 @@
 server:
   port: 9090
 
-#  H2 Console configuration
-h2:
-  console:
-    path: /h2-console
-    #settings:
-      #web-allow-others: true
-
 #  Configuration in order to connect with the H2 database
 spring:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      #settings:
+        #web-allow-others: true
   datasource:
     driverClassName: org.h2.Driver
     username: sa
@@ -30,16 +29,6 @@ spring:
  #init:
    #mode: always
 
-#jpa:
-  #hibernate:
-    #ddl-auto: create
-
-#  Add logging
-#logging:
-  #level:
-    #org:
-      #hibernate:
-        #SQL: DEBUG
 
 #  Gives more detailed logs.
 logging:
@@ -50,6 +39,7 @@ logging:
           descriptor:
             sql:
               BasicBinder: TRACE
+        #SQL: DEBUG
 
 
 #jpa:
