@@ -50,7 +50,9 @@ public class SpringBatchApplication implements CommandLineRunner {
 		JobExecution loadJobExecution = jobLauncher.run(loadJob, new JobParameters());
 		System.out.println("Job Status: " + loadJobExecution.getStatus());
 
-		//To run filterJob directly after loadJob when application starts
+		/*
+		* Running the FilterJob with parallel steps does not currently work.
+		* */
 		/*JobExecution filterJobExecution = jobLauncher.run(filterJob, incrementer.getNext(new JobParameters()));
 		System.out.println("Job Status: " + filterJobExecution.getStatus());*/
 	}
