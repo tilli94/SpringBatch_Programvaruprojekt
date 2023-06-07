@@ -83,6 +83,13 @@ public class FlatFileToDB extends DefaultBatchConfiguration {
                 .build();
     }
 
+    /**
+     * Sets up a flow to split the job into three parallel flows.
+     * @param personLoadStep The first step of the job, which loads Person data.
+     * @param transactionLoadStep The second step of the job, which loads Transaction data.
+     * @param accountLoadStep The final step of the job, which loads Account data.
+     * @return
+     */
     @Bean
     public Flow splitFlow(Step personLoadStep, Step transactionLoadStep, Step accountLoadStep) {
         return new FlowBuilder<SimpleFlow>("splitFlow")
@@ -90,30 +97,51 @@ public class FlatFileToDB extends DefaultBatchConfiguration {
                 .add(flow1(personLoadStep), flow2(transactionLoadStep), flow3(accountLoadStep))
                 .build();
     }
+
+    /**
+     * Sets up a task executor to run the job steps in parallel.
+     * @return
+     */
     @Bean
     public TaskExecutor taskExecutor() {
         return new SimpleAsyncTaskExecutor("spring_batch");
     }
+
+    /**
+     * Sets up the first flow of the job, which runs personLoadStep.
+     * @param personLoadStep The first step of the job, which loads Person data.
+     * @return A configured Flow instance that runs personLoadStep.
+     */
     @Bean
     public Flow flow1(Step personLoadStep) {
         return new FlowBuilder<SimpleFlow>("flow1")
                 .start(personLoadStep)
                 .build();
     }
+
+    /**
+     * Sets up the second flow of the job, which runs transactionLoadStep.
+     * @param transactionLoadStep The second step of the job, which loads Transaction data.
+     * @return A configured Flow instance that runs transactionLoadStep.
+     */
     @Bean
     public Flow flow2(Step transactionLoadStep) {
         return new FlowBuilder<SimpleFlow>("flow2")
                 .start(transactionLoadStep)
                 .build();
     }
+
+    /**
+     * Sets up the final flow of the job, which runs accountLoadStep.
+     * @param accountLoadStep The final step of the job, which loads Account data.
+     * @return A configured Flow instance that runs accountLoadStep.
+     */
     @Bean
     public Flow flow3(Step accountLoadStep) {
         return new FlowBuilder<SimpleFlow>("flow3")
                 .start(accountLoadStep)
                 .build();
     }
-
-
 
     /**
      * Sets up a step to load data into the Person table.
